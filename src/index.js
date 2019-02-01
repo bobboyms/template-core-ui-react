@@ -1,5 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Cliente from "./cliente";
+import {HashRouter, Route, Link } from 'react-router-dom';
+
+import 'primereact/resources/themes/nova-light/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 import "./assets/vendors/@coreui/icons/css/coreui-icons.min.css"
 import "./assets/vendors/flag-icon-css/css/flag-icon.min.css"
@@ -14,6 +20,10 @@ import './assets/css/style.css'
 import logo from "./assets/img/brand/logo.svg"
 import sygnet from "./assets/img/brand/sygnet.svg"
 import avatar from "./assets/img/avatars/6.jpg"
+
+import {Button} from 'primereact/button';
+
+
 
 const Body = (props) => {
   return(
@@ -47,8 +57,8 @@ const Menu = () => {
                 <i className="nav-icon icon-puzzle"></i> Base</a>
               <ul className="nav-dropdown-items">
                 <li className="nav-item">
-                  <a className="nav-link" href="base/breadcrumb.html">
-                    <i className="nav-icon icon-puzzle"></i> Breadcrumb</a>
+                  <Link className="nav-link" to="/cliente">
+                    <i className="nav-icon icon-puzzle"></i> Breadcrumb</Link>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="base/cards.html">
@@ -607,25 +617,64 @@ const Aside = () => {
   );
 }
 
-const Titulo = ({titulo}) => {
+const Main = (props) => {
     return(
-        <h1>{titulo}</h1>
+      <div className="main">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">Home</li>
+          <li className="breadcrumb-item">
+            <a href="#">Admin</a>
+          </li>
+          <li className="breadcrumb-item active">Dashboard</li>
+          <li className="breadcrumb-menu d-md-down-none">
+            <div className="btn-group" role="group" aria-label="Button group">
+              <a className="btn" href="#">
+                <i className="icon-speech"></i>
+              </a>
+              <a className="btn" href="./">
+                <i className="icon-graph"></i> &nbsp;Dashboard</a>
+              <a className="btn" href="#">
+                <i className="icon-settings"></i> &nbsp;Settings</a>
+            </div>
+          </li>
+        </ol>
+        <div className="container-fluid">
+          <div className="animated fadeIn">
+            <div className="row">
+               
+               {props.children}
+
+            </div>
+          </div>
+        </div>
+    </div>
     )
 }
 
-const Index = () => {
+const Index = (props) => {
   return (
       <span>
         <Header />
         <Body>
           <Menu />
           <Aside />
+          <Main >
+              <Route path="/cliente" component={Cliente} />
+          </Main>
         </Body>
       </span>
   );
 };
 
-ReactDOM.render(<Index />, document.getElementById("index"));
+const Rotas = () => {
+  return(
+    <HashRouter>
+      <Index />
+    </HashRouter>
+  )
+}
+
+ReactDOM.render(<Rotas />, document.getElementById("index"));
 
 import 'script-loader!./assets/vendors/jquery/js/jquery.min.js';
 import 'script-loader!./assets/vendors/popper.js/js/popper.min.js';
@@ -633,6 +682,7 @@ import 'script-loader!./assets/vendors/bootstrap/js/bootstrap.min.js';
 import 'script-loader!./assets/vendors/pace-progress/js/pace.min.js';
 import 'script-loader!./assets/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js';
 import 'script-loader!./assets/vendors/@coreui/coreui/js/coreui.min.js';
+
 
 //Referencia
 //http://docs.w3cub.com/webpack/loaders/script-loader/
