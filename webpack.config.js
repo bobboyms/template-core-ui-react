@@ -6,8 +6,8 @@ const htmlWebpackPlugin = new HtmlWebPackPlugin({
 });
 
 module.exports = {
-    devtool: 'inline-source-map',
-
+  devtool: 'inline-source-map',
+ 
   module: {
     rules: [
       {
@@ -16,6 +16,10 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
+      },
+      {
+        test: /\.exec\.js$/,
+        use: [ 'script-loader' ]
       },
       {
         test: /\.s?[ac]ss$/,
