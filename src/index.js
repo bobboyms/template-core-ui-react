@@ -1,7 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Cliente from "./cliente";
-import {HashRouter, Route, Link } from 'react-router-dom';
+import Funcionario from "./funcionario";
+import {HashRouter, Route, Link, Switch, Redirect, BrowserRouter } from 'react-router-dom';
+
+import TelaLogin from "./Login";
+import controleUsuario from "./controle-usuario/ControleUsuario";
 
 import 'primereact/resources/themes/nova-light/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -23,6 +27,12 @@ import avatar from "./assets/img/avatars/6.jpg"
 
 import {Button} from 'primereact/button';
 
+import 'script-loader!./assets/vendors/jquery/js/jquery.min.js';
+import 'script-loader!./assets/vendors/popper.js/js/popper.min.js';
+import 'script-loader!./assets/vendors/bootstrap/js/bootstrap.min.js';
+import 'script-loader!./assets/vendors/pace-progress/js/pace.min.js';
+import 'script-loader!./assets/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js';
+import 'script-loader!./assets/vendors/@coreui/coreui/js/coreui.min.js';
 
 
 const Body = (props) => {
@@ -58,11 +68,11 @@ const Menu = () => {
               <ul className="nav-dropdown-items">
                 <li className="nav-item">
                   <Link className="nav-link" to="/cliente">
-                    <i className="nav-icon icon-puzzle"></i> Breadcrumb</Link>
+                    <i className="nav-icon icon-puzzle"></i> Cliente</Link>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="base/cards.html">
-                    <i className="nav-icon icon-puzzle"></i> Cards</a>
+                <Link className="nav-link" to="/">
+                    <i className="nav-icon icon-puzzle"></i> Principal</Link>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="base/carousel.html">
@@ -651,37 +661,95 @@ const Main = (props) => {
     )
 }
 
-const Index = (props) => {
-  return (
-      <span>
-        <Header />
-        <Body>
-          <Menu />
-          <Aside />
-          <Main >
-              <Route path="/cliente" component={Cliente} />
-          </Main>
-        </Body>
-      </span>
-  );
-};
 
-const Rotas = () => {
-  return(
-    <HashRouter>
-      <Index />
-    </HashRouter>
-  )
+
+class Index extends React.Component  {
+    
+  constructor(props) {
+    super(props);
+  }
+
+  
+  logar = (usuario, senha) => {
+    controleUsuario.logar(usuario,senha);
+    this.setState({logado:true})
+  }
+
+      render() {
+
+        let rota = <Switch>
+            <Route path="/" exact component={() => {
+              return (<Funcionario />)
+            }} />
+            <Route path="/cliente" component={Cliente} />
+            <Redirect to="/" />
+        </Switch>
+
+        if (!controleUsuario.logado()) {
+          rota = <Switch>
+            <Route path="/" exact component={() => {
+              return (<TelaLogin logar={this.logar} />)
+            }} />
+          </Switch>
+        }
+
+        if (controleUsuario.logado()) {
+          return (
+            <span>
+              <Header />
+              <Body>
+                <Menu />
+                <Aside />
+                <Main >
+                  {rota}
+                </Main>
+              </Body>
+            </span>
+          )
+        } else {
+          return(
+            <span>
+              {rota}
+            </span>
+          )
+        }
+
+          
+    }
 }
+
+class Rotas extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  logar = (usuario, senha) => {
+    controleUsuario.logar(usuario, senha)
+
+    console.log(controleUsuario.logado())
+
+    this.setState({logado:true})
+
+
+  }
+
+  render() {
+    
+    return(
+      <BrowserRouter>
+        <Index />
+      </BrowserRouter>
+    )
+  }
+}
+
+controleUsuario
 
 ReactDOM.render(<Rotas />, document.getElementById("index"));
 
-import 'script-loader!./assets/vendors/jquery/js/jquery.min.js';
-import 'script-loader!./assets/vendors/popper.js/js/popper.min.js';
-import 'script-loader!./assets/vendors/bootstrap/js/bootstrap.min.js';
-import 'script-loader!./assets/vendors/pace-progress/js/pace.min.js';
-import 'script-loader!./assets/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js';
-import 'script-loader!./assets/vendors/@coreui/coreui/js/coreui.min.js';
+
+
+
 
 
 //Referencia
